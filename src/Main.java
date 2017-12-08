@@ -8,6 +8,9 @@ public class Main {
             window.Clear();
             window.Display();
         }
-        Logger test = new Logger("System","test");
+        Logger test = new Logger();
+        test.info("testinfo");
+        test.warning("testwarnung");
+        test.error("testerror");
     }
 }
