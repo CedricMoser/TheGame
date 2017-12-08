@@ -1,5 +1,5 @@
 package logging;
-
+//imports
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,13 +8,16 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class Logger {
+    //Logger Class declariers Member
     private PrintWriter mPWriter;
     private FileWriter  mFileWriter;
     public Logger(){
+        //Logger constructor initials Member
         mPWriter = null;
         mFileWriter = null;
     }
     public void info(String txt){
+        //Method info Loggs "info"text typs into Log.txt with aktualy date
         txt.trim();
         File mLogData = new File("Log.txt");
         SimpleDateFormat mFormatDate=new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
@@ -32,6 +35,7 @@ public class Logger {
         }
     }
     public void warning(String txt){
+        //Method info Loggs "warning"text typs into Log.txt with aktualy date
         txt.trim();
         File mLogData = new File("Log.txt");
         SimpleDateFormat mFormatDate=new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
@@ -49,6 +53,7 @@ public class Logger {
         }
     }
     public void error(String txt){
+        //Method info Loggs "error"text typs into Log.txt with aktualy date
         txt.trim();
         File mLogData = new File("Log.txt");
         SimpleDateFormat mFormatDate=new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
