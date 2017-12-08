@@ -1,4 +1,3 @@
-import logging.Logger;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,9 +7,5 @@ public class Main {
             window.Clear();
             window.Display();
         }
-        Logger test = new Logger();
-        test.info("testinfo");
-        test.warning("testwarnung");
-        test.error("testerror");
     }
 }
