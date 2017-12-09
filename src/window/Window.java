@@ -1,13 +1,18 @@
+package window;
+
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class Window {
+public class Window implements GLFWWindowSizeCallbackI {
     private static int windows = 0;
     private long mWindowHandle;
+    private int  mWidth;
+    private int  mHeight;
 
     public Window(CharSequence title, int width, int height) {
         if (windows++ == 0) {
@@ -20,6 +25,10 @@ public class Window {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
         this.mWindowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
+        this.mWidth        = width;
+        this.mHeight       = height;
+
+        glfwSetWindowSizeCallback(this.mWindowHandle, this);
 
         if (this.mWindowHandle == NULL) {
             // ERROR
@@ -29,6 +38,14 @@ public class Window {
         GL.createCapabilities();
 
         glViewport(0, 0, 400, 400);
+    }
+
+    public void free() {
+        glfwDestroyWindow(this.mWindowHandle);
+
+        if (windows-- == 1) {
+            glfwTerminate();
+        }
     }
 
     public boolean isOpen() {
@@ -43,5 +60,23 @@ public class Window {
     public void display() {
         glfwSwapBuffers(this.mWindowHandle);
         glfwPollEvents();
+    }
+
+    public int getWidth() {
+        return this.mWidth;
+    }
+
+    public int getHeight() {
+        return this.mHeight;
+    }
+
+    @Override
+    public void invoke(long window, int width, int height) {
+        if (this.mWindowHandle == window) {
+            this.mWidth  = width;
+            this.mHeight = height;
+
+            glViewport(0, 0, this.mWidth, this.mHeight);
+        }
     }
 }

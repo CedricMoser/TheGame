@@ -1,4 +1,5 @@
 import graphics.Renderer2D;
+import window.Window;
 
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
 import static org.lwjgl.opengl.GL11.glGetError;
@@ -6,7 +7,10 @@ import static org.lwjgl.opengl.GL11.glGetError;
 public class Main {
     public static void main(String[] args) {
         Window window = new Window("Hello World", 400, 400);
-        Renderer2D renderer = new Renderer2D(100);
+        Renderer2D renderer = new Renderer2D(window, 100);
+
+        long begin = System.currentTimeMillis();
+        int  fps = 0;
 
         while (window.isOpen()) {
             window.clear();
@@ -28,9 +32,19 @@ public class Main {
                 System.err.println("Error: " + err);
             }
 
+            long now = System.currentTimeMillis();
+            fps++;
+
+            if (now - begin >= 1000) {
+                System.out.println("FPS: " + fps);
+                fps = 0;
+                begin = now;
+            }
+
             window.display();
         }
 
         renderer.free();
+        window.free();
     }
 }

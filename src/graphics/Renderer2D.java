@@ -2,6 +2,7 @@ package graphics;
 
 import maths.Mat4;
 import org.lwjgl.BufferUtils;
+import window.Window;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -25,6 +26,7 @@ public class Renderer2D {
     public static final int RECT_CUT_RIGHT_TOP    = 0x04;
     public static final int RECT_CUT_RIGHT_BOTTOM = 0x08;
 
+    private Window      mWindow;
     private int         mVAO;
     private int         mVBO;
     private ByteBuffer  mPointer;
@@ -34,7 +36,9 @@ public class Renderer2D {
     private ShortBuffer mIndexBuffer;
     private int         mVertexCount;
 
-    public Renderer2D(int vertexCount) {
+    public Renderer2D(Window window, int vertexCount) {
+        this.mWindow = window;
+
         this.mVAO = glGenVertexArrays();
         this.mVBO = glGenBuffers();
 
@@ -108,7 +112,6 @@ public class Renderer2D {
     }
 
     public void drawRect(float x, float y, float w, float h) {
-        this.mColor = 0x00FF00FF;
         this.pushVertex(x, y);
         this.pushVertex(x + w, y);
         this.pushVertex(x + w, y + h);
@@ -252,7 +255,7 @@ public class Renderer2D {
         this.mShader.bind();
 
         Mat4 model = new Mat4(1.0f);
-        Mat4 projection = Mat4.ortho(0.0f, 400, 0.0f, 400.0f, -1.0f, 1.0f);
+        Mat4 projection = Mat4.ortho(0.0f, this.mWindow.getWidth(), 0.0f, this.mWindow.getHeight(), -1.0f, 1.0f);
 
         int loc_model      = glGetUniformLocation(this.mShader.GetProgram(), "model");
         int loc_projection = glGetUniformLocation(this.mShader.GetProgram(), "projection");
