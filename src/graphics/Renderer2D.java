@@ -7,8 +7,12 @@ import window.Window;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -26,15 +30,17 @@ public class Renderer2D {
     public static final int RECT_CUT_RIGHT_TOP    = 0x04;
     public static final int RECT_CUT_RIGHT_BOTTOM = 0x08;
 
-    private Window      mWindow;
-    private int         mVAO;
-    private int         mVBO;
-    private ByteBuffer  mPointer;
-    private int         mPointerOffset;
-    private Shader      mShader;
-    private int         mColor;
-    private ShortBuffer mIndexBuffer;
-    private int         mVertexCount;
+    private Window        mWindow;
+    private int           mVAO;
+    private int           mVBO;
+    private ByteBuffer    mPointer;
+    private int           mPointerOffset;
+    private Shader        mShader;
+    private int           mColor;
+    private ShortBuffer   mIndexBuffer;
+    private int           mVertexCount;
+
+    private List<Texture> mImages;
 
     public Renderer2D(Window window, int vertexCount) {
         this.mWindow = window;
@@ -67,6 +73,8 @@ public class Renderer2D {
         this.mIndexBuffer = BufferUtils.createShortBuffer(vertexCount * 3);
 
         this.mVertexCount = 0;
+
+        this.mImages = new ArrayList<Texture>();
     }
 
     /**
@@ -109,6 +117,32 @@ public class Renderer2D {
         this.pushTriangleToIndexBuffer(this.mVertexCount, this.mVertexCount + 1, this.mVertexCount + points);
 
         this.mVertexCount += points + 1;
+    }
+
+    public void drawImage(float x, float y, float w, float h, Texture texture) {
+        int id = -1;
+
+        for (int i = 0; i < this.mImages.size(); i++) {
+            if (this.mImages.get(i) == texture) {
+                id = i;
+                break;
+            }
+        }
+
+        if (id == -1) {
+            id = this.mImages.size();
+            this.mImages.add(texture);
+        }
+
+        this.pushVertex(x       , y       , 0.0f, 0.0f, id, false);
+        this.pushVertex(x + w, y       , 1.0f, 0.0f, id, false);
+        this.pushVertex(x + w, y + h, 1.0f, 1.0f, id, false);
+        this.pushVertex(x       , y + h, 0.0f, 1.0f, id, false);
+
+        this.pushTriangleToIndexBuffer(this.mVertexCount, this.mVertexCount + 1, this.mVertexCount + 2);
+        this.pushTriangleToIndexBuffer(this.mVertexCount + 2, this.mVertexCount + 3, this.mVertexCount);
+
+        this.mVertexCount += 4;
     }
 
     public void drawRect(float x, float y, float w, float h) {
@@ -263,12 +297,26 @@ public class Renderer2D {
         glUniformMatrix4fv(loc_model     , false, model.getFloatArray());
         glUniformMatrix4fv(loc_projection, false, projection.getFloatArray());
 
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < this.mImages.size(); i++) {
+            builder.append("textures[");
+            builder.append(i);
+            builder.append("]");
+
+            glActiveTexture(GL_TEXTURE0 + i);
+            this.mImages.get(i).bind();
+
+            glUniform1i(glGetUniformLocation(this.mShader.GetProgram(), builder.toString()), i);
+
+            builder.setLength(0);
+        }
+
         glDrawElements(GL_TRIANGLES, this.mIndexBuffer);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
-        this.mShader.unbind();
+        Shader.unbind();
     }
 
     private void pushVertex(float x, float y) {

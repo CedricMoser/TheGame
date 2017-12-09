@@ -1,4 +1,5 @@
 import graphics.Renderer2D;
+import graphics.Texture;
 import window.Window;
 
 import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
@@ -11,6 +12,9 @@ public class Main {
 
         long begin = System.currentTimeMillis();
         int  fps = 0;
+
+        Texture tex = new Texture("test.png");
+        Texture tex2 = new Texture("test2.png");
 
         while (window.isOpen()) {
             window.clear();
@@ -25,13 +29,17 @@ public class Main {
             renderer.drawRoundedRect(120.0f, 10.0f, 100.0f, 25.0f, 10.0f);
             renderer.setColor(0x0000FFFF);
             renderer.drawRect(230.0f, 10.0f, 100.0f, 25.0f, Renderer2D.RECT_CUT_LEFT_TOP | Renderer2D.RECT_CUT_RIGHT_BOTTOM);
-            renderer.end();
 
+            renderer.drawImage(10.0f, 150.0f, tex.getWidth(), tex.getHeight(), tex);
+            renderer.drawImage(10.0f, 300.0f, tex2.getWidth(), tex2.getHeight(), tex2);
+
+            renderer.end();
+/*
             int err;
             while ((err = glGetError()) != GL_NO_ERROR) {
                 System.err.println("Error: " + err);
             }
-
+*/
             long now = System.currentTimeMillis();
             fps++;
 

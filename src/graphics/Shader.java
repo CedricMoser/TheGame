@@ -80,11 +80,11 @@ public class Shader {
         return this.mProgram;
     }
 
-    void bind() {
+    public void bind() {
         glUseProgram(this.mProgram);
     }
 
-    void unbind() {
+    public static void unbind() {
         glUseProgram(0);
     }
 }

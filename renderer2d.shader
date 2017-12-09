@@ -27,6 +27,12 @@ in float texID;
 
 out vec4 color_out2;
 
+uniform sampler2D textures[32];
+
 void main() {
-    color_out2 = color_out;
+    if (texID >= 0.0) {
+        color_out2 = texture2D(textures[int(texID)], uv_out);
+    } else {
+        color_out2 = color_out;
+    }
 }
