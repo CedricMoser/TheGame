@@ -1,12 +1,40 @@
+import fnt.FNTDocument;
+import fnt.FNTParser;
 import graphics.Renderer2D;
 import graphics.Texture;
 import window.Window;
 
+import java.io.*;
+
+import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
+import static org.lwjgl.opengl.GL11.glGetError;
 
 public class Main {
     public static void main(String[] args) {
+        /*
+        StringBuilder builder = new StringBuilder();
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("Characters.fnt"))));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+                builder.append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        FNTParser parser = new FNTParser();
+        FNTDocument doc = parser.parse(builder.toString());
+
+        System.out.println();
+        */
         Window window = new Window("Hello World", 400, 400);
-        Renderer2D renderer = new Renderer2D(window, 100);
+        Renderer2D renderer = new Renderer2D(window, 200);
 
         long begin = System.currentTimeMillis();
         int  fps = 0;
@@ -15,12 +43,6 @@ public class Main {
         Texture tex2 = new Texture("test2.png");
 
         while (window.isOpen()) {
-            gui.Event event = window.pollEvent();
-            while (event != null) {
-                System.out.println(event);
-                System.out.println(event);
-                event = window.pollEvent();
-            }
             window.clear();
 
             renderer.begin();
@@ -37,6 +59,8 @@ public class Main {
             renderer.drawImage(10.0f, 150.0f, tex.getWidth(), tex.getHeight(), tex);
             renderer.drawImage(10.0f, 300.0f, tex2.getWidth(), tex2.getHeight(), tex2);
 
+            renderer.drawString(15.0f, 15.0f, "Hello world");
+
             renderer.end();
 /*
             int err;
@@ -44,6 +68,7 @@ public class Main {
                 System.err.println("Error: " + err);
             }
 */
+
             long now = System.currentTimeMillis();
             fps++;
 

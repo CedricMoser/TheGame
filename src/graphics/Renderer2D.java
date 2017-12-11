@@ -1,6 +1,7 @@
 package graphics;
 
 import maths.Mat4;
+import maths.Vector2;
 import org.lwjgl.BufferUtils;
 import window.Window;
 
@@ -42,6 +43,8 @@ public class Renderer2D {
 
     private List<Texture> mImages;
 
+    private Font          mFont;
+
     public Renderer2D(Window window, int vertexCount) {
         this.mWindow = window;
 
@@ -75,6 +78,8 @@ public class Renderer2D {
         this.mVertexCount = 0;
 
         this.mImages = new ArrayList<Texture>();
+
+        this.mFont = new Font("Characters");
     }
 
     /**
@@ -120,19 +125,7 @@ public class Renderer2D {
     }
 
     public void drawImage(float x, float y, float w, float h, Texture texture) {
-        int id = -1;
-
-        for (int i = 0; i < this.mImages.size(); i++) {
-            if (this.mImages.get(i) == texture) {
-                id = i;
-                break;
-            }
-        }
-
-        if (id == -1) {
-            id = this.mImages.size();
-            this.mImages.add(texture);
-        }
+        int id = this.getTextureId(texture);
 
         this.pushVertex(x       , y       , 0.0f, 0.0f, id, false);
         this.pushVertex(x + w, y       , 1.0f, 0.0f, id, false);
@@ -273,6 +266,47 @@ public class Renderer2D {
         this.mVertexCount = tmpVertexCount;
     }
 
+    public void drawString(float x, float y, String text) {
+        float offsetX = 0.0f;
+        float offsetY = 0.0f;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (c == ' ') {
+                offsetX += this.mFont.getCharacterWidth('-');
+                continue;
+            } else if (c == '\n') {
+                offsetY += this.mFont.getCharacterHeight('M');
+                offsetX = 0.0f;
+                continue;
+            }
+
+            Vector2 off = this.mFont.getOffset(c);
+
+            this.drawCharacter(offsetX + x + off.getX(), offsetY + y + off.getY(), c);
+
+            offsetX += this.mFont.getCharacterWidth(c);
+        }
+    }
+
+    public void drawCharacter(float x, float y, char c) {
+        int id = this.getTextureId(this.mFont.getTexture());
+
+        float w = this.mFont.getCharacterWidth(c);
+        float h = this.mFont.getCharacterHeight(c);
+        Vector2[] uvs = this.mFont.getUVs(c);
+
+        this.pushVertex(x       , y       , uvs[0].getX(), uvs[0].getY(), id, false);
+        this.pushVertex(x + w, y       , uvs[1].getX(), uvs[1].getY(), id, false);
+        this.pushVertex(x + w, y + h, uvs[2].getX(), uvs[2].getY(), id, false);
+        this.pushVertex(x       , y + h, uvs[3].getX(), uvs[3].getY(), id, false);
+
+        this.pushTriangleToIndexBuffer(this.mVertexCount, this.mVertexCount + 1, this.mVertexCount + 2);
+        this.pushTriangleToIndexBuffer(this.mVertexCount + 2, this.mVertexCount + 3, this.mVertexCount);
+
+        this.mVertexCount += 4;
+    }
+
     public void begin() {
         glBindVertexArray(this.mVAO);
         glBindBuffer(GL_ARRAY_BUFFER, this.mVBO);
@@ -351,5 +385,23 @@ public class Renderer2D {
         this.mIndexBuffer = this.mIndexBuffer.put((short) first);
         this.mIndexBuffer = this.mIndexBuffer.put((short) second);
         this.mIndexBuffer = this.mIndexBuffer.put((short) third);
+    }
+
+    private int getTextureId(Texture texture) {
+        int id = -1;
+
+        for (int i = 0; i < this.mImages.size(); i++) {
+            if (this.mImages.get(i) == texture) {
+                id = i;
+                break;
+            }
+        }
+
+        if (id == -1) {
+            id = this.mImages.size();
+            this.mImages.add(texture);
+        }
+
+        return id;
     }
 }
