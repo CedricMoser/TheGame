@@ -35,4 +35,6 @@ void main() {
     } else {
         color_out2 = color_out;
     }
+
+    if(color_out2.a < 0.5) discard;
 }
