@@ -2,8 +2,6 @@ import graphics.Renderer2D;
 import graphics.Texture;
 import window.Window;
 
-import static org.lwjgl.opengl.GL11.GL_NO_ERROR;
-import static org.lwjgl.opengl.GL11.glGetError;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,6 +15,12 @@ public class Main {
         Texture tex2 = new Texture("test2.png");
 
         while (window.isOpen()) {
+            gui.Event event = window.pollEvent();
+            while (event != null) {
+                System.out.println(event);
+                System.out.println(event);
+                event = window.pollEvent();
+            }
             window.clear();
 
             renderer.begin();

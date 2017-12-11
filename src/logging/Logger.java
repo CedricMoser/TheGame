@@ -29,6 +29,7 @@ public class Logger {
             mFileWriter.write("["+mdateString+"] Info: "+txt);
             mFileWriter.write(System.getProperty("line.separator"));
             mFileWriter.flush();
+            System.out.println("[" + mdateString + "] Info: " + txt);
             mFileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,10 +48,12 @@ public class Logger {
             mFileWriter.write("["+mdateString+"] Warning: "+txt);
             mFileWriter.write(System.getProperty("line.separator"));
             mFileWriter.flush();
+            System.out.println("[" + mdateString + "] Warning: " + txt);
             mFileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     public void error(String txt){
         //Method info Loggs "error"text typs into Log.txt with aktualy date
@@ -64,6 +67,7 @@ public class Logger {
             mFileWriter= new FileWriter(mLogData, true);
             mFileWriter.write("["+mdateString+"] Error: "+txt);
             mFileWriter.write(System.getProperty("line.separator"));
+            System.err.println("[" + mdateString + "] Error: " + txt);
             mFileWriter.flush();
             mFileWriter.close();
         } catch (IOException e) {

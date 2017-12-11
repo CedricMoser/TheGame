@@ -1,18 +1,24 @@
 package window;
 
+import gui.Event;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 
+import java.util.ArrayList;
+
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import static org.lwjgl.glfw.GLFW.*;
 
-public class Window implements GLFWWindowSizeCallbackI {
+public class Window {
     private static int windows = 0;
     private long mWindowHandle;
     private int  mWidth;
     private int  mHeight;
+    private WindowSizeCallBack mWindowSizeCallBack;
+    private MouseButtonCallBack mMouseButtonCallBack;
+    private ArrayList<Event> mEventHandlerList;
+    private KeyCallBack mKeyCallBack;
 
     public Window(CharSequence title, int width, int height) {
         if (windows++ == 0) {
@@ -27,8 +33,14 @@ public class Window implements GLFWWindowSizeCallbackI {
         this.mWindowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
         this.mWidth        = width;
         this.mHeight       = height;
+        this.mWindowSizeCallBack = new WindowSizeCallBack(this);
+        this.mMouseButtonCallBack = new MouseButtonCallBack(this);
+        this.mEventHandlerList = new ArrayList<Event>();
+        this.mKeyCallBack = new KeyCallBack(this);
 
-        glfwSetWindowSizeCallback(this.mWindowHandle, this);
+        glfwSetKeyCallback(this.mWindowHandle, this.mKeyCallBack);
+        glfwSetWindowSizeCallback(this.mWindowHandle, this.mWindowSizeCallBack);
+        glfwSetMouseButtonCallback(this.mWindowHandle, this.mMouseButtonCallBack);
 
         if (this.mWindowHandle == NULL) {
             // ERROR
@@ -39,6 +51,7 @@ public class Window implements GLFWWindowSizeCallbackI {
 
         glViewport(0, 0, 400, 400);
     }
+
 
     public void free() {
         glfwDestroyWindow(this.mWindowHandle);
@@ -70,13 +83,21 @@ public class Window implements GLFWWindowSizeCallbackI {
         return this.mHeight;
     }
 
-    @Override
-    public void invoke(long window, int width, int height) {
-        if (this.mWindowHandle == window) {
-            this.mWidth  = width;
-            this.mHeight = height;
+    protected void setSize(int width, int height) {
+        this.mWidth = width;
+        this.mHeight = height;
+        glViewport(0, 0, this.mWidth, this.mHeight);
+    }
 
-            glViewport(0, 0, this.mWidth, this.mHeight);
-        }
+    protected long getHandle() {
+        return this.mWindowHandle;
+    }
+
+    protected void pushEvent(Event event) {
+        mEventHandlerList.add(event);
+    }
+
+    public Event pollEvent() {
+        return this.mEventHandlerList.size() > 0 ? mEventHandlerList.remove(0) : null;
     }
 }
