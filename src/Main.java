@@ -1,10 +1,12 @@
 import graphics.Renderer2D;
+import gui.Event;
 import window.Window;
 
 
 
 public class Main {
     public static void main(String[] args) {
+
         /*
         StringBuilder builder = new StringBuilder();
 
@@ -27,6 +29,7 @@ public class Main {
 
         System.out.println();
         */
+
         Window window = new Window("Hello World", 400, 400);
         Renderer2D renderer = new Renderer2D(window, 200);
 
@@ -37,6 +40,13 @@ public class Main {
         //Texture tex2 = new Texture("test2.png");
 
         while (window.isOpen()) {
+
+            Event event = window.pollEvent();
+            while (event != null) {
+                System.out.println(event);
+                event = window.pollEvent();
+            }
+
             window.clear();
 
             renderer.begin();
@@ -71,7 +81,6 @@ public class Main {
                 fps = 0;
                 begin = now;
             }
-
             window.display();
         }
 

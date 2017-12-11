@@ -19,6 +19,8 @@ public class Window {
     private MouseButtonCallBack mMouseButtonCallBack;
     private ArrayList<Event> mEventHandlerList;
     private KeyCallBack mKeyCallBack;
+    private MouseMoveCallBack mMouseMoveCallBack;
+
 
     public Window(CharSequence title, int width, int height) {
         if (windows++ == 0) {
@@ -37,7 +39,9 @@ public class Window {
         this.mMouseButtonCallBack = new MouseButtonCallBack(this);
         this.mEventHandlerList = new ArrayList<Event>();
         this.mKeyCallBack = new KeyCallBack(this);
+        this.mMouseMoveCallBack = new MouseMoveCallBack(this);
 
+        glfwSetCursorPosCallback(this.mWindowHandle, this.mMouseMoveCallBack);
         glfwSetKeyCallback(this.mWindowHandle, this.mKeyCallBack);
         glfwSetWindowSizeCallback(this.mWindowHandle, this.mWindowSizeCallBack);
         glfwSetMouseButtonCallback(this.mWindowHandle, this.mMouseButtonCallBack);

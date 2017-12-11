@@ -1,29 +1,27 @@
 package gui;
 
 public class MouseMovedEvent extends Event {
-    private int mX;
-    private int mY;
-    private boolean mDragged;
+    private double mX;
+    private double mY;
 
-    public MouseMovedEvent(int x, int y, boolean dragged) {
+
+    public MouseMovedEvent(double x, double y) {
         super(Event.Type.Mouse_Moved);
         this.mX = x;
         this.mY = y;
-        this.mDragged = dragged;
-
     }
 
-    public int getmX() {
+    public double getmX() {
         return mX;
     }
 
-    public int getmY() {
+    public double getmY() {
 
         return mY;
     }
 
-    public boolean getmDragged() {
-
-        return mDragged;
+    @Override
+    public String toString() {
+        return "Eventtype: " + this.getType() + " X: " + this.getmX() + " Y: " + this.getmY() + " Hashcode: " + this.hashCode();
     }
 }
