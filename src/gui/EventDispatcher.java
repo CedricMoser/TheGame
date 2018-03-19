@@ -11,6 +11,7 @@ public class EventDispatcher {
         if (mEvent.handeled) {
             return;
         }
+
         if (mEvent.getType() == type) {
             mEvent.handeled = handler.onEvent(mEvent);
         }

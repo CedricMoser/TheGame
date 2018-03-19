@@ -20,7 +20,7 @@ public class FNTParser {
 
         if (!info(doc)) return null;
         if (!common(doc)) return null;
-        if (!page(doc)) return null;
+        if (!pages(doc)) return null;
         if (!chars(doc)) return null;
         if (!kernings(doc)) return null;
 
@@ -121,18 +121,22 @@ public class FNTParser {
         return true;
     }
 
-    private boolean page(FNTDocument doc) {
+    private boolean pages(FNTDocument doc) {
         if (!this.accept(TokenType.IDENTIFIER, "page")) return false;
 
-        Integer id = (Integer) this.equal("id", TokenType.INT);
-        if (id == null) return false;
+        do {
+            Integer id = (Integer) this.equal("id", TokenType.INT);
+            if (id == null) return false;
 
-        String file = (String) this.equal("file", TokenType.STRING);
-        if (file == null) return false;
+            String file = (String) this.equal("file", TokenType.STRING);
+            if (file == null) return false;
 
-        FNTPage page = doc.getPage();
-        page.id      = id;
-        page.file    = file;
+            FNTPage page = new FNTPage();
+            page.setID(id);
+            page.setFile(file);
+
+            doc.addPage(page);
+        } while (this.expect(TokenType.IDENTIFIER, "page"));
 
         return true;
     }
@@ -143,6 +147,8 @@ public class FNTParser {
         if (!this.accept(TokenType.EQUALS, "")) return false;
         if (!this.expect(TokenType.INT)) return false;
         this.mToken = this.mTokenizer.next();
+
+        List<FNTPage> pages = doc.getPages();
 
         while (this.expect(TokenType.IDENTIFIER, "char")) {
             this.mToken = this.mTokenizer.next();
@@ -189,7 +195,7 @@ public class FNTParser {
             fntChar.page = page;
             fntChar.chnl = chnl;
 
-            doc.addChar(fntChar);
+            pages.get(page).addChar(fntChar);
         }
 
         return true;

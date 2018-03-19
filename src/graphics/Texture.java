@@ -39,8 +39,8 @@ public class Texture {
         this.bind();
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.mImage.getWidth(), this.mImage.getHeight(), 0, GL_BGRA, GL_UNSIGNED_BYTE, this.mImage.getRGB(0, 0, this.mImage.getWidth(), this.mImage.getHeight(), null, 0, this.mImage.getWidth()));
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
         Texture.unbind();
 

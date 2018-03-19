@@ -1,5 +1,7 @@
 package gui;
 
+import graphics.Color;
+
 public class Button {
     private int mHight;
     private int mWidth;

@@ -1,9 +1,11 @@
 package window;
 
 import gui.Event;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -41,14 +43,16 @@ public class Window {
         this.mKeyCallBack = new KeyCallBack(this);
         this.mMouseMoveCallBack = new MouseMoveCallBack(this);
 
+        if (this.mWindowHandle == NULL) {
+            // ERROR
+            System.err.println("WHAAAAAAAAAAAAAAAAT");
+            System.err.println(glfwGetError(null));
+        }
+
         glfwSetCursorPosCallback(this.mWindowHandle, this.mMouseMoveCallBack);
         glfwSetKeyCallback(this.mWindowHandle, this.mKeyCallBack);
         glfwSetWindowSizeCallback(this.mWindowHandle, this.mWindowSizeCallBack);
         glfwSetMouseButtonCallback(this.mWindowHandle, this.mMouseButtonCallBack);
-
-        if (this.mWindowHandle == NULL) {
-            // ERROR
-        }
 
         glfwMakeContextCurrent(this.mWindowHandle);
         GL.createCapabilities();
