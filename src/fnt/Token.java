@@ -20,4 +20,9 @@ public class Token {
     public TokenType getType() {
         return mType;
     }
+
+    @Override
+    public String toString() {
+        return "[" + this.mType + "] '" + this.mContent + "'";
+    }
 }

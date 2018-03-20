@@ -1,14 +1,42 @@
+import fnt.Token;
+import fnt.TokenType;
+import fnt.Tokenizer;
 import graphics.Color;
 import graphics.Font;
 import graphics.Renderer2D;
 import graphics.Texture;
 import gui.Event;
+import utils.FileUtils;
 import window.Window;
+
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class Main {
     public static void main(String[] args) {
+
+        Tokenizer tokenizer = new Tokenizer();
+        ArrayList<Token> specialChars = new ArrayList<>();
+        specialChars.add(new Token(TokenType.HASH, "#"));
+        specialChars.add(new Token(TokenType.SLASH, "/"));
+        specialChars.add(new Token(TokenType.LPAREN, "("));
+        specialChars.add(new Token(TokenType.RPAREN, ")"));
+        specialChars.add(new Token(TokenType.DOUBLEPOINT, ":"));
+        specialChars.add(new Token(TokenType.POINT, "."));
+        specialChars.add(new Token(TokenType.NEWLINE, "\n"));
+
+        tokenizer.skipNewlines(false);
+        tokenizer.setSpecialChars(specialChars);
+        tokenizer.setInput(FileUtils.readTextFile("test.obj"));
+        Token tok = tokenizer.next();
+
+        while (tok.getType() != TokenType.EOF) {
+            System.out.println(tok);
+
+            tok = tokenizer.next();
+        }
+
         /*
         StringBuilder builder = new StringBuilder();
 
@@ -31,6 +59,8 @@ public class Main {
 
         System.out.println();
         */
+
+
         Window window = new Window("Hello World", 400, 400);
         Renderer2D renderer = new Renderer2D(window, 200);
         Font fnt = new Font("SignedCharacters");
